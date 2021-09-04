@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 url = url.replace('.pdf','')
                 url = url.replace('pdf','abs')
             }
-            alert(url)
             getTitle(url).then(
                 (title) => {
                 submit(url, title)
