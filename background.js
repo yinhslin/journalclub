@@ -17,12 +17,29 @@ function submit (link, title) {
     return fetch(url, opts)
   }
 
+const getTitle = (url) => {  
+  return fetch(url)
+    .then((response) => response.text())
+    .then((html) => {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const title = doc.querySelectorAll('title')[0];
+      return title.innerText;
+    });
+};
+  
 chrome.browserAction.onClicked.addListener(function(tab) { 
     alert('Submitted to Journal Club')
 
     chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
         let url = tabs[0].url;
-        let title = tabs[0].title;
-        submit(url, title)
+        if (url.includes('arxiv')) {
+          url.replace('.pdf','')
+          url.replace('pdf','abs')
+        }
+        getTitle(url).then(
+          (title) => {
+          alert(title)
+          submit(url, title)
+        })
     });
 });
